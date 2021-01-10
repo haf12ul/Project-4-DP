@@ -1,28 +1,25 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package contactmanagementsoftware;
 
 import java.io.File;
+import java.util.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+//iterator import
+import java.util.Iterator;
+import static jdk.nashorn.internal.objects.NativeRegExp.test;
 
-/**
- *
- * @author ritz619
- */
 public class MUI extends javax.swing.JFrame implements AcquaintanceIterator {
 
-    /**
-     * Creates new form MUI
-     */
+    // Factory
     private AcquaintanceFactory Acquaintancesfactory;
+
+    // Iterator
     private static ArrayList<ArrayList<Acquaintances>> acquaintances;
     private static ArrayList<Acquaintances> personalFriends;
     private static ArrayList<Acquaintances> relatives;
@@ -36,8 +33,10 @@ public class MUI extends javax.swing.JFrame implements AcquaintanceIterator {
     private boolean detailsFlag;
     private String op;
     private String searchString;
+    private AcquaintanceFactory mainDirectory;
     private static MUI manager;
 
+    // Factory
     private MUI() {
         initComponents();
         String[] columnNames = {"S.No", "Name", "Mobile", " Email"};
@@ -57,6 +56,7 @@ public class MUI extends javax.swing.JFrame implements AcquaintanceIterator {
         Acquaintancesfactory = new AcquaintanceFactory();
     }
 
+    // Singleton
     public static MUI getInstance() {
         if (MUI.manager == null) {
             manager = new MUI();
@@ -64,6 +64,7 @@ public class MUI extends javax.swing.JFrame implements AcquaintanceIterator {
         return manager;
     }
 
+    // Facade
     public void setDescription() {
         name.setText("");
         mobile.setText("");
@@ -172,7 +173,7 @@ public class MUI extends javax.swing.JFrame implements AcquaintanceIterator {
                 three.setVisible(true);
                 Operation_Menu.setBorder(javax.swing.BorderFactory.createTitledBorder(null, op + " Casual Acquaintances Details", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("DialogInput", 1, 16)));
                 jLabel7.setText("First meeting time & location:");
-                jLabel8.setText("First meeting CIrcumstances:");
+                jLabel8.setText("First meeting circumstances:");
                 jLabel9.setText("Other useful information:");
                 jLabel7.setVisible(true);
                 jLabel8.setVisible(true);
@@ -196,7 +197,7 @@ public class MUI extends javax.swing.JFrame implements AcquaintanceIterator {
             jButton11.setVisible(false);
             Operation_Menu.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Display Details", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("DialogInput", 1, 16)));
         }
-    }
+    } // End of Facade
 
     public final void setUpTableData() {
         DefaultTableModel tableModel = (DefaultTableModel) jXTable1.getModel();
@@ -708,72 +709,112 @@ public class MUI extends javax.swing.JFrame implements AcquaintanceIterator {
     public void runn() {
         String s = "<html> <b>Search results:</b><br>Found!<br><br>Acquaintance Details: <br>";
         int j = 0;
+
+        // Iterator Implementation
         for (int i = 0; i < acquaintances.get(0).size(); i++) {
-            if (acquaintances.get(0).get(i).getName().matches(searchString)) {
-                j++;
-                PersonalFriends perF = (PersonalFriends) acquaintances.get(0).get(i);
-                if (j == 1) {
-                    s = s.concat("<br>I. Personal Friends<br>");
+
+            MyIterator a = new MyIterator();
+
+            while (a.hasNext()) {
+
+                PersonalFriends perF = (PersonalFriends) a.next();
+
+                if (perF.getName().matches(searchString)) {
+                    j++;
+                    if (j == 1) {
+                        s = s.concat("<br>I. Personal Friends<br>");
+                    }
+                    s = s.concat(j + ". Name: " + perF.getName() + "<br>");
+                    s = s.concat("Mobile No: " + perF.getMobileNo() + "<br>");
+                    s = s.concat("Email: " + perF.getEmail() + "<br>");
+                    s = s.concat("Specific events: " + perF.getEvents() + "<br>");
+                    s = s.concat("First Acquaintance context: " + perF.getAContext() + "<br>");
+                    s = s.concat("First Acquaintance date: " + perF.getADate() + "<br>");
                 }
-                s = s.concat(j + ". Name: " + perF.getName() + "<br>");
-                s = s.concat("Mobile No: " + perF.getMobileNo() + "<br>");
-                s = s.concat("Email: " + perF.getEmail() + "<br>");
-                s = s.concat("Specific events: " + perF.getEvents() + "<br>");
-                s = s.concat("First Acquaintance context: " + perF.getAContext() + "<br>");
-                s = s.concat("First Acquaintance date: " + perF.getADate() + "<br>");
-            }
+                break;
+            } // End of while loop 
         }
+
         j = 0;
         for (int i = 0; i < acquaintances.get(1).size(); i++) {
-            if (acquaintances.get(1).get(i).getName().matches(searchString)) {
-                j++;
-                Relatives rel = (Relatives) acquaintances.get(1).get(i);
-                if (j == 1) {
-                    s = s.concat("<br>II. Relatives<br>");
+
+            MyIterator b = new MyIterator();
+
+            while (b.hasNext()) {
+
+                Relatives rel = (Relatives) b.next();
+
+                if (rel.getName().matches(searchString)) {
+                    j++;
+                    if (j == 1) {
+                        s = s.concat("<br>II. Relatives<br>");
+                    }
+                    s = s.concat(j + ". Name: " + rel.getName() + "<br>");
+                    s = s.concat("Mobile No: " + rel.getMobileNo() + "<br>");
+                    s = s.concat("Email: " + rel.getEmail() + "<br>");
+                    s = s.concat("Relatives Birthday: " + rel.getBDate() + "<br>");
+                    s = s.concat("Last met date: " + rel.getLDate() + "<br>");
                 }
-                s = s.concat(j + ". Name: " + rel.getName() + "<br>");
-                s = s.concat("Mobile No: " + rel.getMobileNo() + "<br>");
-                s = s.concat("Email: " + rel.getEmail() + "<br>");
-                s = s.concat("Relatives Birthday: " + rel.getBDate() + "<br>");
-                s = s.concat("Last met date: " + rel.getLDate() + "<br>");
+                break;
             }
         }
+
         j = 0;
         for (int i = 0; i < acquaintances.get(2).size(); i++) {
-            if (acquaintances.get(2).get(i).getName().matches(searchString)) {
-                j++;
-                ProfessionalFriends proF = (ProfessionalFriends) acquaintances.get(2).get(i);
-                if (j == 1) {
-                    s = s.concat("<br>III. Professional Friends<br>");
+
+            MyIterator c = new MyIterator();
+
+            while (c.hasNext()) {
+
+                ProfessionalFriends proF = (ProfessionalFriends) c.next();
+
+                if (proF.getName().matches(searchString)) {
+                    j++;
+                    if (j == 1) {
+                        s = s.concat("<br>III. Professional Friends<br>");
+                    }
+                    s = s.concat(j + ". Name: " + proF.getName() + "<br>");
+                    s = s.concat("Mobile No: " + proF.getMobileNo() + "<br>");
+                    s = s.concat("Email: " + proF.getEmail() + "<br>");
+                    s = s.concat("Common Interests: " + proF.getCommonInterests() + "<br>");
                 }
-                s = s.concat(j + ". Name: " + proF.getName() + "<br>");
-                s = s.concat("Mobile No: " + proF.getMobileNo() + "<br>");
-                s = s.concat("Email: " + proF.getEmail() + "<br>");
-                s = s.concat("Common Interests: " + proF.getCommonInterests() + "<br>");
+                break;
             }
         }
+
         j = 0;
         for (int i = 0; i < acquaintances.get(3).size(); i++) {
-            if (acquaintances.get(3).get(i).getName().matches(searchString)) {
-                j++;
-                CasualAcquaintances ca = (CasualAcquaintances) acquaintances.get(3).get(i);
-                if (j == 1) {
-                    s = s.concat("<br>IV. Casual Acquaintances<br>");
+
+            MyIterator d = new MyIterator();
+
+            while (d.hasNext()) {
+
+                CasualAcquaintances ca = (CasualAcquaintances) d.next();
+
+                if (ca.getName().matches(searchString)) {
+                    j++;
+
+                    if (j == 1) {
+                        s = s.concat("<br>IV. Casual Acquaintances<br>");
+                    }
+                    s = s.concat(j + ". Name: " + ca.getName() + "<br>");
+                    s = s.concat("Mobile No: " + ca.getMobileNo() + "<br>");
+                    s = s.concat("Email: " + ca.getEmail() + "<br>");
+                    s = s.concat("First met location & time: " + ca.getWhenWhere() + "<br>");
+                    s = s.concat("First met circumstances: " + ca.getCircumstances() + "<br>");
+                    s = s.concat("Other useful information: " + ca.getOtherInfo() + "<br>");
                 }
-                s = s.concat(j + ". Name: " + ca.getName() + "<br>");
-                s = s.concat("Mobile No: " + ca.getMobileNo() + "<br>");
-                s = s.concat("Email: " + ca.getEmail() + "<br>");
-                s = s.concat("First met location & time: " + ca.getWhenWhere() + "<br>");
-                s = s.concat("First met circumstances: " + ca.getCircumstances() + "<br>");
-                s = s.concat("Other useful information: " + ca.getOtherInfo() + "<br>");
+                break;
             }
         }
+
         if (s.matches("<html> <b>Search results:</b><br>Found!<br><br>Acquaintance Details: <br>")) {
             s = "<html>No result found</html>";
         } else {
             s = s.concat("</html>");
         }
         details.setText(s);
+        // End of searchlist
     }
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
@@ -901,8 +942,9 @@ public class MUI extends javax.swing.JFrame implements AcquaintanceIterator {
                 personalF.setEvents(One);
                 personalF.setAContext(Two);
                 personalF.setADate(Three);
+                JOptionPane.showMessageDialog(null, "Contact added.");
                 personalF.setAnnoyingAbility(new CantAnnoy());
-                System.out.println(personalF.tryToAnnoy());
+                JOptionPane.showMessageDialog(null, "Personal friend is " +personalF.tryToAnnoy());
                 if (addOrEditFlag) {
                     acquaintances.get(categoryIndex).add(personalF);
                 }
@@ -936,8 +978,9 @@ public class MUI extends javax.swing.JFrame implements AcquaintanceIterator {
                 rel.setEmail(Email);
                 rel.setBDate(One);
                 rel.setLDate(Two);
+                JOptionPane.showMessageDialog(null, "Contact added.");
                 rel.setAnnoyingAbility(new CanAnnoy());
-                System.out.println(rel.tryToAnnoy());
+                JOptionPane.showMessageDialog(null, "Relative is " +rel.tryToAnnoy());
                 if (addOrEditFlag) {
                     acquaintances.get(categoryIndex).add(rel);
                 }
@@ -958,8 +1001,9 @@ public class MUI extends javax.swing.JFrame implements AcquaintanceIterator {
                 proF.setMobileNo(Mobile);
                 proF.setEmail(Email);
                 proF.setCommonInterests(One);
+                JOptionPane.showMessageDialog(null, "Contact added.");
                 proF.setAnnoyingAbility(new CantAnnoy());
-                System.out.println(proF.tryToAnnoy());
+                JOptionPane.showMessageDialog(null, "Professional friend is " +proF.tryToAnnoy());
                 if (addOrEditFlag) {
                     acquaintances.get(categoryIndex).add(proF);
                 }
@@ -992,8 +1036,9 @@ public class MUI extends javax.swing.JFrame implements AcquaintanceIterator {
                 ca.setWhenWhere(One);
                 ca.setCircumstances(Two);
                 ca.setOtherInfo(Three);
+                JOptionPane.showMessageDialog(null, "Contact added.");
                 ca.setAnnoyingAbility(new CantAnnoy());
-                System.out.println(ca.tryToAnnoy());
+                JOptionPane.showMessageDialog(null, "Casual acquaintances is " +ca.tryToAnnoy());
                 if (addOrEditFlag) {
                     acquaintances.get(categoryIndex).add(ca);
                 }
@@ -1042,6 +1087,7 @@ public class MUI extends javax.swing.JFrame implements AcquaintanceIterator {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MUI().setVisible(true);
+                new MUI().setLocationRelativeTo(null);
             }
         });
     }
@@ -1087,12 +1133,14 @@ public class MUI extends javax.swing.JFrame implements AcquaintanceIterator {
     private javax.swing.JTextArea two;
     // End of variables declaration//GEN-END:variables
 
+    // Iterator
     @Override
     public Iterator getIterator() {
-        return new MyIterator();
+        MyIterator iterator = new MyIterator();
+        return (Iterator) iterator;
     }
 
-    private class MyIterator implements Iterator {
+    private class MyIterator implements IteratorList<Acquaintances> {
 
         int index;
 

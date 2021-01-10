@@ -47,5 +47,4 @@ public class PersonalFriends extends Acquaintances implements Serializable {
             setEvents(reader.nextLine());
         }
     }
-
 }

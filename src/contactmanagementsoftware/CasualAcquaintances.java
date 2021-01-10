@@ -53,5 +53,4 @@ public class CasualAcquaintances extends Acquaintances implements Serializable {
             setOtherInfo(reader.nextLine());
         }
     }
-
 }

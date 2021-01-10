@@ -19,7 +19,7 @@ public class SerializationUtil implements Serializable{
         return obj;
     }
 
-    // serialize the given object and save it to file
+    // Serialize the given object and save it to file
     public static void serialize(Object obj, String fileName)
             throws IOException {
         FileOutputStream fos = new FileOutputStream(fileName);
@@ -28,5 +28,4 @@ public class SerializationUtil implements Serializable{
 
         fos.close();
     }
-
 }

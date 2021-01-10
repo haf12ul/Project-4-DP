@@ -12,6 +12,10 @@ public class Acquaintances implements Serializable {
     Acquaintances() {
     }
 
+    public Acquaintances get(int index) {
+        throw new UnsupportedOperationException();
+    }
+
     public void setName(String name) {
         this.Name = name;
     }
@@ -46,5 +50,8 @@ public class Acquaintances implements Serializable {
         annoyType = newAnnoyType;
 
     }
-
+    
+    public int size() {
+        throw new UnsupportedOperationException(); 
+    }
 }
